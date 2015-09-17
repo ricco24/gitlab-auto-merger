@@ -1,0 +1,22 @@
+parameters:
+
+php:
+	date.timezone: Europe/Bratislava
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+session:
+	expiration: 14 days
+
+services:
+	router: App\RouterFactory::createRouter
+
+	gitlabClient:
+		class: Gitlab\Client(%gitlab.url%)
+		setup:
+			- authenticate(%gitlab.token%, Gitlab\Client::AUTH_URL_TOKEN)
+
+	mergeRequestBuilder: App\Model\GitLab\MergeRequestBuilder(%gitlab.token%, %mergeRequest.emergencyMergeNote%)

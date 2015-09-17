@@ -1,0 +1,11 @@
+parameters:
+	gitlab:
+		url: 'url to your gitlab installation'
+		token: 'private token for automerger user'
+
+	mergeRequest:
+		# Positive votes difference to provide a merge
+		positiveVotesDiff: 2
+
+		# If this note is given, emergency merge is provided
+		emergencyMergeNote: emergency merge

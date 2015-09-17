@@ -1,0 +1,17 @@
+{
+	"name": "nette/sandbox",
+	"description": "",
+	"type": "project",
+	"license": ["MIT"],
+	"authors": [
+		{
+			"name": "Samuel Kelemen",
+			"email": "kelemen.samuel@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">= 5.3.7",
+		"nette/nette": "~2.3.0",
+	  	"m4tthumphrey/php-gitlab-api": "7.11.*"
+	}
+}
