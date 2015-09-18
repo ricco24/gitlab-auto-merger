@@ -134,7 +134,7 @@ class MergeRequest
 	 */
 	public function needEmergencyMerge()
 	{
-		return $this->emergencyMergeNote && (strtolower($this->payload['object_attributes']) == $this->emergencyMergeNote);
+		return $this->emergencyMergeNote && (strtolower($this->payload['object_attributes']['note']) == $this->emergencyMergeNote);
 	}
 
 	/**
