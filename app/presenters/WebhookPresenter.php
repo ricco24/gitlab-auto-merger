@@ -55,7 +55,7 @@ class WebhookPresenter extends BasePresenter
 			$this->gitlabClient->api('mr')->merge($projectId, $mergeRequestId, 'Emergency auto merged');
 		}
 
-		if ($mergeRequest->canBeAutoMerged($this->context['mergeRequests']['positiveVotesDiff'])) {
+		if ($mergeRequest->canBeAutoMerged($this->context->parameters['mergeRequests']['positiveVotesDiff'])) {
 			$this->gitlabClient->api('mr')->merge($projectId, $mergeRequestId, 'Auto merged');
 		}
 	}
