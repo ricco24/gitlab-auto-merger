@@ -1,0 +1,36 @@
+{block content}
+
+<h1 n:block="title" class="page-header">Projects search</h1>
+
+<p class="pull-right">
+    <strong>Search:</strong> {$search}
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Merge requests</th>
+            <th>Visibility</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr n:foreach="$projects as $project" n:class="isset($enabledProjects[$project['id']]) ? success">
+            <th scope="row">{$project['id']}</th>
+            <td><a href="{$project['web_url']}" target="_blank">{$project['name_with_namespace']}</a></td>
+            <td>{!$project['merge_requests_enabled']|enabledStatus}</td>
+            <td>{!$project['visibility_level']|projectVisibility}</td>
+            <td class="text-right">
+                {ifset $enabledProjects[$project['id']]}
+                    <a n:href="Project:edit, $enabledProjects[$project['id']]->id" class="btn btn-default btn-sm">Edit</a>
+                    <a n:href="MergeRequest:default, $enabledProjects[$project['id']]->id" class="btn btn-default btn-sm">Merge requests</a>
+                    <a n:href="addWebhook!, $project['id']" class="btn btn-info btn-sm">Add webhook</a>
+                {else}
+                    <a n:href="Project:enable, $project['id']" class="btn btn-default btn-sm">Enable</a>
+                {/ifset}
+            </td>
+        </tr>
+    </tbody>
+</table>

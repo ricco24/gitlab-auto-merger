@@ -3,6 +3,7 @@
 namespace App\Presenters;
 
 use App\Model\GitLab\MergeRequestBuilder;
+use App\Model\Repository\ProjectRepository;
 use Gitlab\Client;
 use Nette\Http\Request;
 use Tracy\Debugger;
@@ -18,8 +19,11 @@ class WebhookPresenter extends BasePresenter
 	/** @var MergeRequestBuilder @inject */
 	public $mergeRequestBuilder;
 
+	/** @var ProjectRepository @inject */
+	public $projectRepository;
+
 	/**
-	 * Auto merge
+	 * Provide auto merge
 	 */
 	public function actionDefault()
 	{
@@ -48,14 +52,16 @@ class WebhookPresenter extends BasePresenter
 			$this->terminate();
 		}
 
+		$project = $this->projectRepository->findByGitlabId($projectId);
+		if (!$project) {
+			Debugger::log('Project ' . $projectId . ' is not allowed to auto merge', Debugger::ERROR);
+			$this->terminate();
+		}
+
 		$mr = $this->gitlabClient->api('mr')->show($projectId, $mergeRequestId);
 		$mergeRequest = $this->mergeRequestBuilder->create($mr, $data);
 
-		if ($mergeRequest->needEmergencyMerge() && $mergeRequest->canBeEmergencyAutoMerged()) {
-			$this->gitlabClient->api('mr')->merge($projectId, $mergeRequestId, 'Emergency auto merged');
-		}
-
-		if ($mergeRequest->canBeAutoMerged($this->context->parameters['mergeRequests']['positiveVotesDiff'])) {
+		if ($mergeRequest->canBeAutoMerged($project->positive_votes)) {
 			$this->gitlabClient->api('mr')->merge($projectId, $mergeRequestId, 'Auto merged');
 		}
 	}

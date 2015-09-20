@@ -16,9 +16,6 @@ class MergeRequest
 	/** @var string|bool	Cached build status */
 	protected $buildStatus;
 
-	/** @var string */
-	protected $emergencyMergeNote;
-
 	/**
 	 * @param string $privateToken
 	 * @param array $apiMergeRequest
@@ -29,14 +26,6 @@ class MergeRequest
 		$this->apiMergeRequest = $apiMergeRequest;
 		$this->payload = $payload;
 		$this->privateToken = $privateToken;
-	}
-
-	/**
-	 * @param string $emergencyMergeNote
-	 */
-	public function setEmergencyMergeNote($emergencyMergeNote)
-	{
-		$this->emergencyMergeNote = $emergencyMergeNote;
 	}
 
 	/**
@@ -129,15 +118,6 @@ class MergeRequest
 	}
 
 	/**
-	 * Wanna do emergency merge?
-	 * @return bool
-	 */
-	public function needEmergencyMerge()
-	{
-		return $this->emergencyMergeNote && (strtolower($this->payload['object_attributes']['note']) == $this->emergencyMergeNote);
-	}
-
-	/**
 	 * Check if merge request can be automerged
 	 * @param int $positiveVotesDiff
 	 * @return bool
@@ -149,15 +129,5 @@ class MergeRequest
 			&& $this->isBuildSuccess()
 			&& !$this->isWorkInProgress()
 			&& ($this->getVotesDiff() >= $positiveVotesDiff);
-	}
-
-	/**
-	 * Check if merge request can be emergency automerged
-	 * Ignore all requirements but can be merged from payload and opened state
-	 * @return bool
-	 */
-	public function canBeEmergencyAutoMerged()
-	{
-		return $this->isOpened() && $this->canBeMerged();
 	}
 }

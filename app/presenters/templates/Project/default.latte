@@ -1,0 +1,32 @@
+{block content}
+
+<h1 n:block="title" class="page-header">Enabled projects</h1>
+
+{if !count($projects)}
+    <div class="alert alert-info">No projects enabled for auto merge. Use <strong>search</strong> to add some.</div>
+{else}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Positive votes</th>
+                <th>Delete source branch</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr n:foreach="$projects as $project">
+                <th scope="row">{$project['gitlab_id']}</th>
+                <td><a href="{$project['url']}" target="_blank">{$project['name']}</a></td>
+                <td>{$project['positive_votes']}</td>
+                <td>{$project['delete_source_branch']}</td>
+                <td class="text-right">
+                    <a n:href="Project:edit, $project['id']" class="btn btn-default btn-sm">Edit</a>
+                    <a n:href="MergeRequest:default, $project['id']" class="btn btn-default btn-sm">Merge requests</a>
+                    <a n:href="addWebhook!, $project['gitlab_id']" class="btn btn-info btn-sm">Add webhook</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{/if}

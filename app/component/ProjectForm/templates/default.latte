@@ -1,0 +1,24 @@
+{form form, class => 'form-horizontal'}
+	<div n:if="$form->hasErrors()" n:foreach="$form->errors as $error" class="alert alert-danger">{$error}</div>
+
+	<div class="form-group">
+        {label positive_votes, class => 'col-sm-4 control-label' /}
+        <div class="col-sm-8">
+          	{input positive_votes, class => 'form-control'}
+        </div>
+    </div>
+
+	<div class="form-group">
+        <div class="col-sm-offset-4 col-sm-8">
+          	<div class="checkbox">
+            	{input delete_source_branch}
+          	</div>
+        </div>
+   	</div>
+
+	<div class="form-group">
+		<div class="col-sm-offset-4 col-sm-8">
+			{input save, class => 'btn btn-success'}
+		</div>
+	</div>
+{/form}

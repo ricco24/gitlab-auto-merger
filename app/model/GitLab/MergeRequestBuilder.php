@@ -12,12 +12,10 @@ class MergeRequestBuilder
 
 	/**
 	 * @param string $privateToken
-	 * @param string|null $emergencyMergeNote
 	 */
-	public function __construct($privateToken, $emergencyMergeNote = null)
+	public function __construct($privateToken)
 	{
 		$this->privateToken = $privateToken;
-		$this->emergencyMergeNote = $emergencyMergeNote;
 	}
 
 	/**
@@ -28,10 +26,6 @@ class MergeRequestBuilder
 	 */
 	public function create(array $apiMergeRequest, array $payload)
 	{
-		$mr = new MergeRequest($this->privateToken, $apiMergeRequest, $payload);
-		if ($this->emergencyMergeNote) {
-			$mr->setEmergencyMergeNote($this->emergencyMergeNote);
-		}
-		return $mr;
+		return new MergeRequest($this->privateToken, $apiMergeRequest, $payload);
 	}
 }

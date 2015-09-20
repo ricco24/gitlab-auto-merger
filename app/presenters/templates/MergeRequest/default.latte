@@ -1,0 +1,46 @@
+{block content}
+
+<h1 n:block="title" class="page-header">Opened merge requests <small style="font-size: 14px">for project {$project->name}</small></h1>
+
+{if !count($mergeRequests)}
+    <div class="alert alert-info">No merge requests for project.</div>
+{else}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Branches</th>
+                <th>Author</th>
+                <th>Asignee</th>
+                <th>Upvotes</th>
+                <th>Downvotes</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr n:foreach="$mergeRequests as $mergeRequest">
+                <th scope="row">{$mergeRequest['id']}</th>
+                <td>{$mergeRequest['title']}</td>
+                <td>{$mergeRequest['source_branch']} => {$mergeRequest['target_branch']}</td>
+                <td>{$mergeRequest['author']['name']}</td>
+                <td>{$mergeRequest['assignee']['name']}</td>
+                <td>{$mergeRequest['upvotes']}</td>
+                <td>{$mergeRequest['downvotes']}</td>
+                <td class="text-right">
+                    <a
+                        href="#"
+                        class="btn btn-success btn-sm"
+                        data-toggle="modal"
+                        data-target="#confirm-modal"
+                        data-modal-title="Accept merge request"
+                        data-modal-body="Do you really want to accept merge request <strong>{$mergeRequest['title']}</strong>?<hr><small class='text-muted'>Accept merge request in this way will ignore all checks (build status, upvotes etc.).<br>Merge request will be accepted with <strong>Auto merger</strong> account.</small>"
+                        data-modal-btn-no-text="No, close"
+                        data-modal-btn-yes-text="Yes, merge"
+                        data-modal-btn-yes-link="{link accept!, $project->id, $mergeRequest['id']}"
+                    >Accept</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{/if}

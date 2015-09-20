@@ -3,6 +3,12 @@ parameters:
 php:
 	date.timezone: Europe/Bratislava
 
+database:
+	default:
+		dsn: %database.default.dsn%
+		user: %database.default.user%
+		password: %database.default.password%
+
 application:
 	errorPresenter: Error
 	mapping:
@@ -14,9 +20,28 @@ session:
 services:
 	router: App\RouterFactory::createRouter
 
-	gitlabClient:
-		class: Gitlab\Client(%gitlab.url%)
-		setup:
-			- authenticate(%gitlab.token%, Gitlab\Client::AUTH_URL_TOKEN)
+	# Repositories
+	settingsRepository: App\Model\Repository\SettingsRepository
+	projectRepository: App\Model\Repository\ProjectRepository
 
-	mergeRequestBuilder: App\Model\GitLab\MergeRequestBuilder(%gitlab.token%, %mergeRequest.emergencyMergeNote%)
+	# Factories
+	settingsFormFactory: App\Components\SettingsForm\SettingsFormFactory
+	projectFormFactory: App\Components\ProjectForm\ProjectFormFactory
+
+	gitlabClient:
+		class: Gitlab\Client(@settingsRepository::getGitlabUrl())
+		setup:
+			- authenticate(@settingsRepository::getToken(), Gitlab\Client::AUTH_URL_TOKEN)
+
+	mergeRequestBuilder: App\Model\GitLab\MergeRequestBuilder(@settingsRepository::getToken())
+
+	# Nette template filters
+	filterLoader:
+		class: App\Helper\FilterLoader
+		setup:
+			- register('enabledStatus', [App\Helper\EnabledStatus, process])
+			- register('projectVisibility', [App\Helper\ProjectVisibility, process])
+
+	nette.latteFactory:
+		setup:
+			- addFilter(null, [@filterLoader, 'load'])
